@@ -1,10 +1,10 @@
 import { activeWindow } from "get-windows";
 import axios from "axios";
+import moment from "moment-timezone";
 
-const activeWindows = []; // Objek untuk menyimpan waktu aktif setiap jendela
+const activeWindows = [];
 let lastActiveWindow = null;
 
-// Fungsi untuk mendapatkan dan menampilkan metadata jendela aktif
 const getActiveWindowData = async () => {
   const windowData = await activeWindow();
 
@@ -22,33 +22,28 @@ const getActiveWindowData = async () => {
     windowTitle = windowTitle.replace(/and \d+ more page$/, "").trim();
     windowTitle = windowTitle.replace(/and \d+ more pages$/, "").trim();
 
-    // Jika jendela sama, perbarui endRun dari entri terakhir
     const lastEntry = activeWindows[activeWindows.length - 1];
-    // Cek apakah jendela saat ini berbeda dari jendela terakhir
     if (windowTitle !== lastActiveWindow) {
       const startRun = lastEntry ? lastEntry.endRun : Date.now();
-      // Jika jendela berbeda, simpan data jendela baru
       activeWindows.push({
         startRun: startRun,
         detail: windowTitle,
         appName: appName,
         endRun: Date.now(),
       });
-      lastActiveWindow = windowTitle; // Perbarui lastWindowTitle dengan jendela baru
+      lastActiveWindow = windowTitle;
     } else {
       lastEntry.endRun = Date.now();
     }
   }
 
-  // Kembalikan semua data aplikasi yang sedang aktif
   return activeWindows;
 };
 
 const toMySQLDatetime = (date) => {
-  return date.toISOString().slice(0, 19).replace("T", " ");
+  return moment(date).tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
 };
 
-// Fungsi untuk mengirim data ke server Laravel
 const sendData = async (
   studentId,
   sessionId,
@@ -72,15 +67,14 @@ const sendData = async (
   }
 };
 
-// Interval untuk memantau jendela aktif setiap detik
 setInterval(async () => {
   const windowData = await getActiveWindowData();
 
   if (windowData.length > 0) {
     const lastWindow = windowData[windowData.length - 1];
     await sendData(
-      "4", // Ganti dengan student_id yang sesuai
-      "2", // Ganti dengan session_id yang sesuai
+      "3", // Ganti student_id yg sesuai
+      "1", // Ganti session_id yg sesuai
       lastWindow.appName,
       lastWindow.detail,
       new Date(lastWindow.startRun),

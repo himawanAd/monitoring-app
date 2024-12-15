@@ -51,6 +51,9 @@ wss.on("connection", function connection(ws) {
       sessionId = command.sessionId;
       monitoring = true;
       console.log("Monitoring Started");
+    } else if (command.command === "stopMonitoring") {
+      monitoring = false;
+      console.log("Monitoring Stopped");
     }
   });
 });

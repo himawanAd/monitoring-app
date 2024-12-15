@@ -1,9 +1,13 @@
+import { WebSocketServer } from "ws";
 import { activeWindow } from "get-windows";
 import axios from "axios";
 import moment from "moment-timezone";
 
 let lastWindow = null;
 let isProcessing = false;
+let monitoring = false;
+let studentId = null;
+let sessionId = null;
 
 const toMySQLDatetime = (date) => {
   return moment(date).tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
@@ -37,8 +41,22 @@ const updateEndTime = async (trackingId, end_time) => {
   }
 };
 
+const wss = new WebSocketServer({ port: 6001 });
+
+wss.on("connection", function connection(ws) {
+  ws.on("message", function incoming(message) {
+    const command = JSON.parse(message);
+    if (command.command === "startMonitoring") {
+      studentId = command.studentId;
+      sessionId = command.sessionId;
+      monitoring = true;
+      console.log("Monitoring Started");
+    }
+  });
+});
+
 setInterval(async () => {
-  if (isProcessing) return;
+  if (!monitoring || isProcessing) return;
   isProcessing = true;
 
   const windowData = await activeWindow();
@@ -75,8 +93,8 @@ setInterval(async () => {
       }
       // send Data baru
       const sendingData = await sendData(
-        "3", //studentId
-        "1", //sessionId
+        studentId,
+        sessionId,
         currentWindow.appName,
         currentWindow.detailApp,
         thisTime // date untuk start time

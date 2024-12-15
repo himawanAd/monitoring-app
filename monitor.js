@@ -44,7 +44,7 @@ const updateEndTime = async (trackingId, end_time) => {
 const wss = new WebSocketServer({ port: 6001 });
 
 wss.on("connection", function connection(ws) {
-  ws.on("message", function incoming(message) {
+  ws.on("message", async function incoming(message) {
     const command = JSON.parse(message);
     if (command.command === "startMonitoring") {
       studentId = command.studentId;
@@ -53,6 +53,11 @@ wss.on("connection", function connection(ws) {
       console.log("Monitoring Started");
     } else if (command.command === "stopMonitoring") {
       monitoring = false;
+      const thisTime = Date.now();
+      if (lastWindow && lastWindow.trackingId) {
+        await updateEndTime(lastWindow.trackingId, thisTime);
+      }
+      lastWindow = null;
       console.log("Monitoring Stopped");
     }
   });

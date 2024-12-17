@@ -2,6 +2,10 @@ import { WebSocketServer } from "ws";
 import { activeWindow } from "get-windows";
 import axios from "axios";
 import moment from "moment-timezone";
+import fs from "fs";
+
+let config = JSON.parse(fs.readFileSync("config.json", "utf8"));
+let serverUrl = config.serverUrl;
 
 let lastWindow = null;
 let isProcessing = false;
@@ -15,7 +19,7 @@ const toMySQLDatetime = (date) => {
 
 const sendData = async (studentId, sessionId, appName, detail, start_time) => {
   try {
-    const response = await axios.post("http://elearning.test/api/trackings", {
+    const response = await axios.post(`${serverUrl}/api/trackings`, {
       student_id: studentId,
       session_id: sessionId,
       app_name: appName,
@@ -32,7 +36,7 @@ const sendData = async (studentId, sessionId, appName, detail, start_time) => {
 
 const updateEndTime = async (trackingId, end_time) => {
   try {
-    await axios.put(`http://elearning.test/api/trackings/${trackingId}`, {
+    await axios.put(`${serverUrl}/api/trackings/${trackingId}`, {
       end_time: toMySQLDatetime(new Date(end_time)),
     });
     console.log("End time updated successfully.");

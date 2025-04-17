@@ -5,6 +5,14 @@ import axios from "axios"; //library untuk HTTP requests
 import moment from "moment-timezone"; //menyesuaikan timezone
 import fs from "fs"; //memanggil file sistem
 
+// fungsi logging
+const logFilePath = "./monitor.log";
+function log(message) {
+  const timestamp = moment().tz("Asia/Jakarta").format("DD-MM-YYYY HH:mm:ss");
+  const logMessage = `[${timestamp}] ${message}\n`;
+  fs.appendFile(logFilePath, logMessage, () => {});
+}
+
 // membaca konfigurasi config.js
 import config from "./config.js";
 // let config = JSON.parse(fs.readFileSync("config.json", "utf8"));
@@ -19,7 +27,7 @@ let studentId = null; //data studentId yang didapat dari server
 let sessionId = null; //data sessionId yang didapat dari server
 let stopTime = null;
 
-console.log("Monitor.js is running");
+log("Monitor.js is running");
 
 // konversi waktu sesuai zona
 const toMySQLDatetime = (date) => {
@@ -40,7 +48,7 @@ const sendData = async (studentId, sessionId, appName, detail, start_time) => {
     console.log("New data send successfully:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error sending data:", error);
+    log("Error sending data:", error);
   }
 };
 
@@ -53,7 +61,7 @@ const updateEndTime = async (trackingId, end_time) => {
     });
     console.log("End time updated successfully.");
   } catch (error) {
-    console.error("Error updating end time:", error);
+    log("Error updating end time:", error);
   }
 };
 
@@ -71,7 +79,7 @@ const sendMonitoringLogToDB = async (status) => {
 
     console.log("Monitoring log sent:", response.data);
   } catch (error) {
-    console.error("Error sending monitoring log:", error);
+    log("Error sending monitoring log:", error);
   }
 };
 
@@ -79,11 +87,11 @@ const sendMonitoringLogToDB = async (status) => {
 const wss = new WebSocketServer({ port: 8080 });
 
 wss.on("connection", function connection(ws) {
-  console.log("Client connected");
+  log("Client connected");
 
   // Event ketika client terputus
   ws.on("close", async () => {
-    console.log("Client disconnected");
+    log("Client disconnected");
     if (monitoring) {
       monitoring = false;
       const thisTime = Date.now();
@@ -95,7 +103,7 @@ wss.on("connection", function connection(ws) {
 
       await sendMonitoringLogToDB("left");
 
-      console.log(
+      log(
         "Monitoring Stopped due to client disconnect for student:",
         studentId,
         "in session:",
@@ -115,7 +123,7 @@ wss.on("connection", function connection(ws) {
         stopTime = Number(command.stopTime) * 1000;
         monitoring = true;
         ws.send("running");
-        console.log(
+        log(
           "Monitoring Started for student:",
           studentId,
           "in session:",
@@ -132,7 +140,7 @@ wss.on("connection", function connection(ws) {
         lastWindow = null;
         await sendMonitoringLogToDB("left");
         ws.send("stopped");
-        console.log(
+        log(
           "Monitoring Stopped for student:",
           studentId,
           "in session:",
@@ -140,7 +148,7 @@ wss.on("connection", function connection(ws) {
         );
       }
     } catch (error) {
-      console.error("Error parsing WebSocket message:", error);
+      log("Error parsing WebSocket message:", error);
     }
   });
 });
@@ -157,7 +165,7 @@ setInterval(async () => {
       await updateEndTime(lastWindow.trackingId, currentTime);
     }
     lastWindow = null;
-    console.log("Monitoring has stopped because time expired.");
+    log("Monitoring has stopped because time expired.");
     return;
   }
 

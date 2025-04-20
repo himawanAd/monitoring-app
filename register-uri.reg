@@ -1,0 +1,17 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\monapp]
+@="URL:monapp Protocol"
+"URL Protocol"=""
+
+[HKEY_CLASSES_ROOT\monapp\shell]
+
+[HKEY_CLASSES_ROOT\monapp\shell\open]
+
+[HKEY_CLASSES_ROOT\monapp\shell\open\command]
+@="wscript \"D:\\UNS\\Skripsi\\monitoring-app\\run.vbs\" \"%1\""
+
+[HKEY_CLASSES_ROOT\monapp\shell\stop]
+
+[HKEY_CLASSES_ROOT\monapp\shell\stop\command]
+@="wscript \"D:\\UNS\\Skripsi\\monitoring-app\\stop.vbs\" \"%1\""

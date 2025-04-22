@@ -146,6 +146,7 @@ wss.on("connection", function connection(ws) {
           "in session:",
           sessionId
         );
+        process.exit(), 10000;
       }
     } catch (error) {
       log("Error parsing WebSocket message:", error);
@@ -166,7 +167,7 @@ setInterval(async () => {
     }
     lastWindow = null;
     log("Monitoring has stopped because time expired.");
-    return;
+    process.exit(), 10000;
   }
 
   isProcessing = true;
@@ -214,7 +215,6 @@ setInterval(async () => {
       if (sendingData) {
         const trackingId = sendingData.id;
         console.log("trackingId: ", trackingId);
-        // process.exit();
         lastWindow = { ...currentWindow, trackingId };
       }
     }

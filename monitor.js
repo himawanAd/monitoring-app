@@ -84,10 +84,11 @@ const sendMonitoringLogToDB = async (status) => {
 };
 
 // membuat koneksi websocket untuk menerima command start/stop monitoring
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ port: config.wsPort });
 
 wss.on("connection", function connection(ws) {
   log("Client connected");
+  ws.send("ready");
 
   // Event ketika client terputus
   ws.on("close", async () => {

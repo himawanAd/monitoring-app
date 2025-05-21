@@ -2,8 +2,8 @@
 
 ### 🖥️ Sistem Pemantauan Aktivitas Perangkat Peserta Didik
 
-This system is developed to monitor student device activity during designated online learning sessions. It is designed to run in the background and connect to the learning platform (e.g., Moodle) via WebSocket for real-time data exchange.  
-_Sistem ini dikembangkan untuk memantau aktivitas perangkat peserta didik selama sesi pembelajaran daring yang telah ditentukan. Sistem dirancang untuk berjalan di latar belakang dan terhubung dengan platform pembelajaran (misalnya, Moodle) melalui WebSocket untuk pertukaran data secara real-time._
+This system is developed to monitor student device activity during designated online learning sessions. It is designed to run in the background and connect to the learning platform (e.g., Moodle — which must be modified to support real-time integration via WebSocket; an example is available at https://github.com/himawanAd/mdl).
+_Sistem ini dikembangkan untuk memantau aktivitas perangkat peserta didik selama sesi pembelajaran daring yang telah ditentukan. Sistem dirancang untuk berjalan di latar belakang dan terhubung dengan platform pembelajaran (misalnya, Moodle — yang harus dimodifikasi agar dapat terintegrasi secara real-time melalui WebSocket; contoh Moodle yang telah dimodifikasi tersedia di https://github.com/himawanAd/mdl)._
 
 ---
 
@@ -25,8 +25,8 @@ _Sistem ini dikembangkan untuk memantau aktivitas perangkat peserta didik selama
 
 ### Steps / Langkah-langkah:
 
-1. Run the following application as **Administrator**:  
-   _Jalankan aplikasi berikut sebagai **Administrator**:_
+1. Download and Run the following application as **Administrator**:  
+   _Unduh dan Jalankan aplikasi berikut sebagai **Administrator**:_
    ```
    monitoringapp-setup.exe
    ```
@@ -96,7 +96,7 @@ _Atau Anda dapat membuka `stop.vbs` yang terletak pada direktori sistem ini._
 
 ---
 
-## 📄 License / Lisensi
+## 📄 Project Information / Informasi Proyek
 
 This project is developed by **Himawan Addillah** as part of an undergraduate final project in Informatics at **Universitas Sebelas Maret**.  
 _Proyek ini dikembangkan oleh **Himawan Addillah** sebagai bagian dari tugas akhir program sarjana Informatika di **Universitas Sebelas Maret**._
